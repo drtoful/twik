@@ -24,6 +24,8 @@ var defaultGlobals = []struct {
 	{"or", orFn},
 	{"and", andFn},
 	{"if", ifFn},
+	{"when", whenFn},
+	{"unless", unlessFn},
 	{"var", varFn},
 	{"set", setFn},
 	{"do", doFn},
@@ -200,8 +202,8 @@ func orFn(scope Scope, args []ast.Node) (value interface{}, err error) {
 }
 
 func ifFn(scope Scope, args []ast.Node) (value interface{}, err error) {
-	if len(args) < 2 || len(args) > 3 {
-		return nil, errors.New(`function "if" takes two or three arguments`)
+	if len(args) != 3 {
+		return nil, errors.New(`function "if" takes three arguments`)
 	}
 	value, err = scope.Eval(args[0])
 	if err != nil {
@@ -214,6 +216,38 @@ func ifFn(scope Scope, args []ast.Node) (value interface{}, err error) {
 		return false, nil
 	}
 	return scope.Eval(args[1])
+}
+
+func whenFn(scope Scope, args []ast.Node) (value interface{}, err error) {
+	if len(args) != 2 {
+		return nil, errors.New(`function "when" takes two arguments`)
+	}
+
+	value, err = scope.Eval(args[0])
+	if err != nil {
+		return nil, err
+	}
+
+	if value == false {
+		return false, nil
+	}
+	return scope.Eval(args[1])
+}
+
+func unlessFn(scope Scope, args []ast.Node) (value interface{}, err error) {
+	if len(args) != 2 {
+		return nil, errors.New(`function "unless" takes two arguments`)
+	}
+
+	value, err = scope.Eval(args[0])
+	if err != nil {
+		return nil, err
+	}
+
+	if value == false {
+		return scope.Eval(args[1])
+	}
+	return false, nil
 }
 
 func varFn(scope Scope, args []ast.Node) (value interface{}, err error) {
