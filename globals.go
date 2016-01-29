@@ -167,7 +167,7 @@ func divFn(args []interface{}) (value interface{}, err error) {
 	return resi, nil
 }
 
-func andFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
+func andFn(scope Scope, args []ast.Node) (value interface{}, err error) {
 	if len(args) == 0 {
 		return true, nil
 	}
@@ -183,7 +183,7 @@ func andFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
 	return value, err
 }
 
-func orFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
+func orFn(scope Scope, args []ast.Node) (value interface{}, err error) {
 	if len(args) == 0 {
 		return false, nil
 	}
@@ -199,7 +199,7 @@ func orFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
 	return value, err
 }
 
-func ifFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
+func ifFn(scope Scope, args []ast.Node) (value interface{}, err error) {
 	if len(args) < 2 || len(args) > 3 {
 		return nil, errors.New(`function "if" takes two or three arguments`)
 	}
@@ -216,7 +216,7 @@ func ifFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
 	return scope.Eval(args[1])
 }
 
-func varFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
+func varFn(scope Scope, args []ast.Node) (value interface{}, err error) {
 	if len(args) == 0 || len(args) > 2 {
 		return nil, errors.New("var takes one or two arguments")
 	}
@@ -235,7 +235,7 @@ func varFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
 	return nil, scope.Create(symbol.Name, value)
 }
 
-func setFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
+func setFn(scope Scope, args []ast.Node) (value interface{}, err error) {
 	if len(args) != 2 {
 		return nil, errors.New(`function "set" takes two arguments`)
 	}
@@ -250,7 +250,7 @@ func setFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
 	return nil, scope.Set(symbol.Name, value)
 }
 
-func doFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
+func doFn(scope Scope, args []ast.Node) (value interface{}, err error) {
 	scope = scope.Branch()
 	for _, arg := range args {
 		value, err = scope.Eval(arg)
@@ -261,7 +261,7 @@ func doFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
 	return value, nil
 }
 
-func funcFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
+func funcFn(scope Scope, args []ast.Node) (value interface{}, err error) {
 	if len(args) < 2 {
 		return nil, errors.New(`func takes three or more arguments`)
 	}
@@ -323,7 +323,7 @@ func funcFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
 	return fn, nil
 }
 
-func forFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
+func forFn(scope Scope, args []ast.Node) (value interface{}, err error) {
 	if len(args) < 4 {
 		return nil, errors.New(`for takes four or more arguments`)
 	}
@@ -357,7 +357,7 @@ func forFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
 	panic("unreachable")
 }
 
-func rangeFn(scope *Scope, args []ast.Node) (value interface{}, err error) {
+func rangeFn(scope Scope, args []ast.Node) (value interface{}, err error) {
 	if len(args) < 3 {
 		return nil, errors.New(`range takes three or more arguments`)
 	}
