@@ -21,6 +21,10 @@ var defaultGlobals = []struct {
 	{"-", minusFn},
 	{"*", mulFn},
 	{"/", divFn},
+	{">", gtFn},
+	{">=", gteFn},
+	{"<", ltFn},
+	{"<=", lteFn},
 	{"or", orFn},
 	{"and", andFn},
 	{"if", ifFn},
@@ -55,6 +59,55 @@ func neFn(args []interface{}) (value interface{}, err error) {
 		return nil, errors.New("!= takes two values")
 	}
 	return args[0] != args[1], nil
+}
+
+func cmpFn(fn string, args []interface{}) (value interface{}, err error) {
+	if len(args) != 2 {
+		return nil, fmt.Errorf(`function "%s" takes two arguments`, fn)
+	}
+
+	var resf float64
+	factor := 1.0
+	for _, arg := range args {
+		switch arg := arg.(type) {
+		case int64:
+			resf += float64(arg) * factor
+		case float64:
+			resf += arg * factor
+		default:
+			return nil, fmt.Errorf("cannot compare %#v", arg)
+		}
+		factor = -1
+	}
+
+	switch fn {
+	case ">":
+		return resf > 0, nil
+	case ">=":
+		return resf >= 0, nil
+	case "<":
+		return resf < 0, nil
+	case "<=":
+		return resf <= 0, nil
+	}
+
+	panic("illegal compare function")
+}
+
+func gtFn(args []interface{}) (value interface{}, err error) {
+	return cmpFn(">", args)
+}
+
+func gteFn(args []interface{}) (value interface{}, err error) {
+	return cmpFn(">=", args)
+}
+
+func ltFn(args []interface{}) (value interface{}, err error) {
+	return cmpFn("<", args)
+}
+
+func lteFn(args []interface{}) (value interface{}, err error) {
+	return cmpFn("<=", args)
 }
 
 func plusFn(args []interface{}) (value interface{}, err error) {
