@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"gopkg.in/twik.v1/ast"
+	"github.com/drtoful/twik/ast"
 )
 
 var defaultGlobals = []struct {
