@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/drtoful/twik/ast"
 	"github.com/kr/pretty"
 	. "gopkg.in/check.v1"
-	"gopkg.in/twik.v1/ast"
 )
 
 func Test(t *testing.T) { TestingT(t) }
