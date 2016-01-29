@@ -10,7 +10,7 @@ import (
 
 	"code.google.com/p/go.crypto/ssh/terminal"
 
-	"gopkg.in/twik.v1"
+	"github.com/drtoful/twik"
 )
 
 func main() {
@@ -37,7 +37,7 @@ func listFn(args []interface{}) (interface{}, error) {
 
 func run() error {
 	fset := twik.NewFileSet()
-	scope := twik.NewScope(fset)
+	scope := twik.NewDefaultScope(fset)
 	scope.Create("printf", printfFn)
 	scope.Create("list", listFn)
 
