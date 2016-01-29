@@ -19,6 +19,7 @@ type Scope interface {
 	Get(string) (interface{}, error)
 	Branch() Scope
 	Eval(ast.Node) (interface{}, error)
+	Enclose(Scope) error
 }
 
 // DefaultScope contains standard functions (symbols) like 'if', 'and' etc. Implements
@@ -160,4 +161,9 @@ func (s *DefaultScope) call(fn interface{}, args []ast.Node) (value interface{},
 		return fn(vargs)
 	}
 	return nil, fmt.Errorf("cannot use %#v as a function", fn)
+}
+
+func (s *DefaultScope) Enclose(parent Scope) error {
+	s.parent = parent
+	return nil
 }
