@@ -7,8 +7,8 @@ import (
 	"github.com/drtoful/twik/ast"
 )
 
-var defaultGlobals = []struct {
-	name  string
+var Globals = []struct {
+	Name  string
 	value interface{}
 }{
 	{"true", true},

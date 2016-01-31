@@ -43,8 +43,8 @@ func (e *Error) Error() string {
 // NewScope returns a new scope for evaluating logic that was parsed into fset.
 func NewDefaultScope(fset *ast.FileSet) Scope {
 	vars := make(map[string]interface{})
-	for _, global := range defaultGlobals {
-		vars[global.name] = global.value
+	for _, global := range Globals {
+		vars[global.Name] = global.value
 	}
 	return &DefaultScope{fset: fset, vars: vars}
 }
