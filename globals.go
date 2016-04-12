@@ -38,6 +38,8 @@ var Globals = []struct {
 	{"for", forFn},
 	{"range", rangeFn},
 	{"split", splitFn},
+	{"nth", nthFn},
+	{"length", lengthFn},
 }
 
 func errorFn(args []interface{}) (value interface{}, err error) {
@@ -118,18 +120,38 @@ func splitFn(args []interface{}) (interface{}, error) {
 		sep, ok2 := args[1].(string)
 		if ok1 && ok2 {
 			slice := strings.Split(text, sep)
-
-			nodes := make([]ast.Node, len(slice))
-			for i, s := range slice {
-				nodes[i] = &ast.String{
-					Input: s,
-					Value: s,
-				}
+			result := make([]interface{}, len(slice))
+			for i := range slice {
+				result[i] = slice[i]
 			}
-			return &ast.List{Nodes: nodes}, nil
+			return result, nil
 		}
 	}
 	return nil, errors.New("split function takes two string arguments")
+}
+
+func nthFn(args []interface{}) (interface{}, error) {
+	if len(args) == 2 {
+		list, ok1 := args[0].([]interface{})
+		n, ok2 := args[1].(int64)
+
+		if ok1 && ok2 {
+			if int(n) >= len(list) {
+				return nil, errors.New("index out of bounds")
+			}
+			return list[n], nil
+		}
+	}
+	return nil, errors.New("nth function takes a list and integer argument")
+}
+
+func lengthFn(args []interface{}) (interface{}, error) {
+	if len(args) == 1 {
+		if list, ok := args[0].([]interface{}); ok {
+			return len(list), nil
+		}
+	}
+	return nil, errors.New("length function takes a list as argument")
 }
 
 func plusFn(args []interface{}) (value interface{}, err error) {
