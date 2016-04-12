@@ -3,6 +3,7 @@ package twik
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/drtoful/twik/ast"
 )
@@ -36,6 +37,7 @@ var Globals = []struct {
 	{"func", funcFn},
 	{"for", forFn},
 	{"range", rangeFn},
+	{"split", splitFn},
 }
 
 func errorFn(args []interface{}) (value interface{}, err error) {
@@ -108,6 +110,26 @@ func ltFn(args []interface{}) (value interface{}, err error) {
 
 func lteFn(args []interface{}) (value interface{}, err error) {
 	return cmpFn("<=", args)
+}
+
+func splitFn(args []interface{}) (interface{}, error) {
+	if len(args) >= 2 {
+		text, ok1 := args[0].(string)
+		sep, ok2 := args[1].(string)
+		if ok1 && ok2 {
+			slice := strings.Split(text, sep)
+
+			nodes := make([]ast.Node, len(slice))
+			for i, s := range slice {
+				nodes[i] = &ast.String{
+					Input: s,
+					Value: s,
+				}
+			}
+			return &ast.List{Nodes: nodes}, nil
+		}
+	}
+	return nil, errors.New("split function takes two string arguments")
 }
 
 func plusFn(args []interface{}) (value interface{}, err error) {
