@@ -148,7 +148,7 @@ func nthFn(args []interface{}) (interface{}, error) {
 func lengthFn(args []interface{}) (interface{}, error) {
 	if len(args) == 1 {
 		if list, ok := args[0].([]interface{}); ok {
-			return len(list), nil
+			return int64(len(list)), nil
 		}
 	}
 	return nil, errors.New("length function takes a list as argument")
